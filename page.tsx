@@ -55,28 +55,23 @@ const currentUser: User = {
   distance: 0,
 }
 
-function isReciprocalMatch(user1: User, user2: User) {
-  return (
-    user1.interestedIn === user2.gender &&
-    user2.interestedIn === user1.gender
-  )
-}
-
-function hasCommonInterests(user1: User, user2: User) {
-  return user1.interests.some((interest) =>
-    user2.interests.includes(interest)
-  )
-}
-
 export default function Home() {
   const [maxDistance, setMaxDistance] = useState(50)
   const [selectedInterest, setSelectedInterest] = useState("")
 
   const filteredUsers = users.filter((user) => {
+    const reciprocal =
+      currentUser.interestedIn === user.gender &&
+      user.interestedIn === currentUser.gender
+
+    const commonInterest = currentUser.interests.some((interest) =>
+      user.interests.includes(interest)
+    )
+
     return (
       user.id !== currentUser.id &&
-      isReciprocalMatch(currentUser, user) &&
-      hasCommonInterests(currentUser, user) &&
+      reciprocal &&
+      commonInterest &&
       user.distance <= maxDistance &&
       (selectedInterest === "" ||
         user.interests.includes(selectedInterest))
