@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Dating App</title>
+</head>
+<body style="padding:20px; font-family: Arial;">
+
+  <h1>Simple Dating App</h1>
+
+  <h2>Filters</h2>
+
+  <label>
+    Max Distance (km):
+    <input type="number" id="distance" value="50" />
+  </label>
+
+  <br><br>
+
+  <label>
+    Interest:
+    <select id="interest">
+      <option value="">All</option>
+      <option value="music">Music</option>
+      <option value="travel">Travel</option>
+      <option value="sports">Sports</option>
+      <option value="movies">Movies</option>
+      <option value="art">Art</option>
+      <option value="fitness">Fitness</option>
+    </select>
+  </label>
+
+  <hr>
+
+  <h2>Matches</h2>
+  <div id="results"></div>
+
+<script>
+const users = [
+  { name: "Priya", gender: "female", interestedIn: "male", interests: ["music","travel"], distance: 10 },
+  { name: "Rahul", gender: "male", interestedIn: "female", interests: ["sports","movies"], distance: 25 },
+  { name: "Anjali", gender: "female", interestedIn: "female", interests: ["music","art"], distance: 5 },
+  { name: "Kiran", gender: "male", interestedIn: "female", interests: ["travel","fitness"], distance: 40 }
+];
+
+const currentUser = {
+  gender: "male",
+  interestedIn: "female",
+  interests: ["music","travel"]
+};
+
+function showMatches() {
+  const maxDistance = Number(document.getElementById("distance").value);
+  const selectedInterest = document.getElementById("interest").value;
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+
+  const filtered = users.filter(user =>
+    user.interestedIn === currentUser.gender &&
+    currentUser.interestedIn === user.gender &&
+    user.distance <= maxDistance &&
+    currentUser.interests.some(i => user.interests.includes(i)) &&
+    (selectedInterest === "" || user.interests.includes(selectedInterest))
+  );
+
+  if (filtered.length === 0) {
+    results.innerHTML = "<p>No matches found.</p>";
+    return;
+  }
+
+  filtered.forEach(user => {
+    results.innerHTML += `
+      <div style="border:1px solid gray; padding:10px; margin-bottom:10px;">
+        <h3>${user.name}</h3>
+        <p>Gender: ${user.gender}</p>
+        <p>Distance: ${user.distance} km</p>
+        <p>Interests: ${user.interests.join(", ")}</p>
+      </div>
+    `;
+  });
+}
+
+document.getElementById("distance").addEventListener("input", showMatches);
+document.getElementById("interest").addEventListener("change", showMatches);
+
+showMatches();
+</script>
+
+</body>
+</html>
